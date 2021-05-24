@@ -52,6 +52,7 @@ public class ConcurrentPathFinding implements Demo {
 
         System.out.printf("concurrently found %d%n", paths.size());
         System.out.printf("time: %d ms%n", end - start);
+        executorService.shutdown();
         return end - start;
     }
 }
