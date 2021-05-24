@@ -1,4 +1,7 @@
+package graph.impl;
+
 import graph.DirectedGraph;
+import graph.impl.NonSynchronizedDirectedGraph;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
