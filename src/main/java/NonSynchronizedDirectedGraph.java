@@ -4,6 +4,7 @@ public class NonSynchronizedDirectedGraph<T> implements DirectedGraph<T> {
 
     private final Map<T, Vertex<T>> vertices = new HashMap<>();
     private final Map<Vertex<T>, Map<Vertex<T>, Edge<T>>> edges = new HashMap<>();
+    private int edgesCount = 0;
 
     @Override
     public void addVertex(T key) {
@@ -15,9 +16,16 @@ public class NonSynchronizedDirectedGraph<T> implements DirectedGraph<T> {
         if (!containsVertex(key)) return;
 
         Vertex<T> vertexToRemove = vertices.remove(key);
-        edges.remove(vertexToRemove);
+        Map<Vertex<T>, Edge<T>> removedEdges = edges.remove(vertexToRemove);
 
-        edges.forEach((vertex, adjacentEdges) -> adjacentEdges.remove(vertexToRemove));
+        if(removedEdges != null) edgesCount -= removedEdges.size();
+
+        edges.forEach((vertex, adjacentEdges) -> {
+            if(adjacentEdges.containsKey(vertexToRemove)) {
+                adjacentEdges.remove(vertexToRemove);
+                edgesCount--;
+            }
+        });
     }
 
     @Override
@@ -33,7 +41,9 @@ public class NonSynchronizedDirectedGraph<T> implements DirectedGraph<T> {
 
         Map<Vertex<T>, Edge<T>> adjacentEdges = edges.getOrDefault(sourceVertex, new HashMap<>());
         adjacentEdges.put(destinationVertex, edge);
+
         edges.put(sourceVertex, adjacentEdges);
+        edgesCount++;
     }
 
     @Override
@@ -46,6 +56,7 @@ public class NonSynchronizedDirectedGraph<T> implements DirectedGraph<T> {
         Vertex<T> destinationVertex = vertices.get(destinationKey);
 
         edges.get(sourceVertex).remove(destinationVertex);
+        edgesCount--;
     }
 
     @Override
@@ -77,6 +88,6 @@ public class NonSynchronizedDirectedGraph<T> implements DirectedGraph<T> {
 
     @Override
     public int getEdgesCount() {
-        return edges.size();
+        return edgesCount;
     }
 }
