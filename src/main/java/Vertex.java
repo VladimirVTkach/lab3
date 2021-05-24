@@ -1,14 +1,14 @@
 import java.util.Objects;
 
 public class Vertex<T> {
-    private final T value;
+    private final T key;
 
-    public Vertex(T value) {
-        this.value = value;
+    public Vertex(T key) {
+        this.key = key;
     }
 
-    public T getValue() {
-        return value;
+    public T getKey() {
+        return key;
     }
 
     @Override
@@ -16,11 +16,11 @@ public class Vertex<T> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vertex<?> vertex = (Vertex<?>) o;
-        return Objects.equals(value, vertex.value);
+        return Objects.equals(key, vertex.key);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value);
+        return Objects.hash(key);
     }
 }
