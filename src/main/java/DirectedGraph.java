@@ -9,9 +9,14 @@ public interface DirectedGraph<T> {
 
     void removeEdge(T sourceKey, T destinationKey);
 
+    boolean containsVertex(T key);
+
+    boolean containsEdge(T sourceKey, T destinationKey);
+
     List<T> findPath(T sourceKey, T destinationKey);
 
     int getVerticesCount();
 
     int getEdgesCount();
+
 }
