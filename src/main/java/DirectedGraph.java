@@ -1,15 +1,15 @@
 import java.util.List;
 
 public interface DirectedGraph<T> {
-    void addVertex(T vertex);
+    void addVertex(T key);
 
-    void removeVertex(T vertex);
+    void removeVertex(T key);
 
-    void addEdge(T sourceVertex, T destinationVertex);
+    void addEdge(T sourceKey, T destinationKey);
 
-    void removeEdge(T sourceVertex, T destinationVertex);
+    void removeEdge(T sourceKey, T destinationKey);
 
-    List<T> findPath(T sourceVertex, T destinationVertex);
+    List<T> findPath(T sourceKey, T destinationKey);
 
     int getVerticesCount();
 
