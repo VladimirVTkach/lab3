@@ -18,10 +18,10 @@ public class NonSynchronizedDirectedGraph<T> implements DirectedGraph<T> {
         Vertex<T> vertexToRemove = vertices.remove(key);
         Map<Vertex<T>, Edge<T>> removedEdges = edges.remove(vertexToRemove);
 
-        if(removedEdges != null) edgesCount -= removedEdges.size();
+        if (removedEdges != null) edgesCount -= removedEdges.size();
 
         edges.forEach((vertex, adjacentEdges) -> {
-            if(adjacentEdges.containsKey(vertexToRemove)) {
+            if (adjacentEdges.containsKey(vertexToRemove)) {
                 adjacentEdges.remove(vertexToRemove);
                 edgesCount--;
             }
@@ -81,7 +81,47 @@ public class NonSynchronizedDirectedGraph<T> implements DirectedGraph<T> {
         if (!containsVertex(sourceKey) || !containsVertex(destinationKey)) {
             return Optional.empty();
         }
-        return Optional.of(new ArrayList<>());
+
+        Vertex<T> sourceVertex = vertices.get(sourceKey);
+        Vertex<T> destinationVertex = vertices.get(destinationKey);
+
+        Map<Vertex<T>, Vertex<T>> parentVertices = new HashMap<>();
+        parentVertices.put(sourceVertex, null);
+
+        Queue<Vertex<T>> frontier = new LinkedList<>();
+        frontier.add(sourceVertex);
+
+        while (!frontier.isEmpty()) {
+            Vertex<T> currentVertex = frontier.poll();
+
+            Map<Vertex<T>, Edge<T>> adjacentEdges = edges.get(currentVertex);
+            if(adjacentEdges == null) continue;
+
+            boolean is_destination_vertex_found = false;
+
+            for (Map.Entry<Vertex<T>, Edge<T>> entry : adjacentEdges.entrySet()) {
+                Vertex<T> adjacentVertex = entry.getKey();
+
+                if (!parentVertices.containsKey(adjacentVertex)) {
+                    parentVertices.put(adjacentVertex, currentVertex);
+                    frontier.add(adjacentVertex);
+                }
+
+                if (adjacentVertex.equals(destinationVertex)) {
+                    is_destination_vertex_found = true;
+                    break;
+                }
+            }
+
+            if(is_destination_vertex_found) break;
+        }
+
+        if (!parentVertices.containsKey(destinationVertex)) {
+            return Optional.empty();
+        }
+
+        List<T> path = constructPath(destinationVertex, parentVertices);
+        return Optional.of(path);
     }
 
     @Override
@@ -92,5 +132,21 @@ public class NonSynchronizedDirectedGraph<T> implements DirectedGraph<T> {
     @Override
     public int getEdgesCount() {
         return edgesCount;
+    }
+
+    private List<T> constructPath(Vertex<T> destinationVertex,
+                                  Map<Vertex<T>, Vertex<T>> parentVertices) {
+        List<T> path = new ArrayList<>();
+
+        path.add(destinationVertex.getKey());
+        Vertex<T> parent = parentVertices.get(destinationVertex);
+        while (parent != null) {
+            destinationVertex = parent;
+            parent = parentVertices.get(destinationVertex);
+            path.add(destinationVertex.getKey());
+        }
+
+        Collections.reverse(path);
+        return path;
     }
 }
