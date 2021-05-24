@@ -1,3 +1,7 @@
+package graph.impl;
+
+import graph.DirectedGraph;
+
 import java.util.*;
 
 public class NonSynchronizedDirectedGraph<T> implements DirectedGraph<T> {
