@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Optional;
 
 public interface DirectedGraph<T> {
     void addVertex(T key);
@@ -13,7 +14,7 @@ public interface DirectedGraph<T> {
 
     boolean containsEdge(T sourceKey, T destinationKey);
 
-    List<T> findPath(T sourceKey, T destinationKey);
+    Optional<List<T>> findPath(T sourceKey, T destinationKey);
 
     int getVerticesCount();
 
