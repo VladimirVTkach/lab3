@@ -77,8 +77,11 @@ public class NonSynchronizedDirectedGraph<T> implements DirectedGraph<T> {
     }
 
     @Override
-    public List<T> findPath(T sourceKey, T destinationKey) {
-        return Collections.emptyList();
+    public Optional<List<T>> findPath(T sourceKey, T destinationKey) {
+        if (!containsVertex(sourceKey) || !containsVertex(destinationKey)) {
+            return Optional.empty();
+        }
+        return Optional.of(new ArrayList<>());
     }
 
     @Override
